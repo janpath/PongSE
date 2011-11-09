@@ -6,7 +6,7 @@ package janpath.pong;
 
 /**
  * 
- * @author Jan Path
+ * @author Jan Path & Maximilian Mader
  */
 public class Main {
 
