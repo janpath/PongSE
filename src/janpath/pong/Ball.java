@@ -23,7 +23,6 @@ public class Ball implements Runnable {
 	private Spielfeld spielfeld;
 	private Thread thread;
 	public Ellipse2D.Double ballImage;
-	double[] debug = new double[4];
 
 	public Ball(int x, int y, int radius, Spielfeld spielfeld) {
 		this.spielfeld = spielfeld;
@@ -98,7 +97,6 @@ public class Ball implements Runnable {
 		thread.start();
 	}
 	private int count = 0;
-	private boolean amSchlag = true;
 
 	@Override
 	public void run() {
@@ -184,9 +182,7 @@ public class Ball implements Runnable {
 
 					spielfeld.schlaeger1.amSchalg = false;
 					spielfeld.schlaeger2.amSchalg = true;
-
-					amSchlag = false;
-
+					
 					PongSound.PONG_PADDLE.playSound();
 
 				}
@@ -216,8 +212,6 @@ public class Ball implements Runnable {
 
 					spielfeld.schlaeger1.amSchalg = true;
 					spielfeld.schlaeger2.amSchalg = false;
-
-					amSchlag = false;
 
 					PongSound.PONG_PADDLE.playSound();
 
