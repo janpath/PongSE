@@ -14,9 +14,14 @@ public class Main {
 	 * @param args
 	 *            the command line arguments
 	 */
-	public static void main(String[] args) {
-		Hauptfenster fenster = new Hauptfenster();
+	public static void main(String[] args) throws InterruptedException {
+		//Soundklasse initialisieren
+                PongSound.PONG_POINT.hashCode();
+                
+                Hauptfenster fenster = new Hauptfenster();
 		fenster.setVisible(true);
+                Thread.sleep(500);
+                fenster.spielfeld.ball.start();
 
 	}
 }
