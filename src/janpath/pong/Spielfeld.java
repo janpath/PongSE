@@ -8,22 +8,22 @@ package janpath.pong;
  *
  * @author Jan Path
  */
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.util.TimerTask;
 
-public class Spielfeld extends JPanel {
+public class Spielfeld extends JPanel implements Runnable {
 
     public Ball ball;
     public Schlaeger schlaeger1;
     public Schlaeger schlaeger2;
     public Rectangle2D.Double paddle1;
     public Rectangle2D.Double paddle2;
-    public Ellipse2D.Double ballImage;
     public Line2D.Double line;
-    private java.util.Timer timer = new java.util.Timer(true);
+    private Thread thread;
     public int score;
     public int geschwindigkeit = 999;
     public JLabel scoreLabel;
@@ -36,7 +36,7 @@ public class Spielfeld extends JPanel {
 
         setBackground(Color.BLACK);
 
-        schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
+        schlaeger1 = new Computer(0, getHeight() / 2 - 45, 12, 90, this);
         schlaeger2 = new Computer(getWidth() - 12, getHeight() / 2 - 45, 12, 90, this);
 
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);
@@ -50,8 +50,6 @@ public class Spielfeld extends JPanel {
                 schlaeger1.getWidth(), schlaeger1.getHeight());
         paddle2 = new Rectangle2D.Double(schlaeger2.getX(), schlaeger2.getY(),
                 schlaeger2.getWidth(), schlaeger2.getHeight());
-        ballImage = new Ellipse2D.Double(ball.getX(), ball.getY(),
-                ball.getRadius(), ball.getRadius());
 
         setLayout(null);
         scoreLabel = new JLabel();
@@ -60,13 +58,20 @@ public class Spielfeld extends JPanel {
 
         add(scoreLabel);
 
-        timer.schedule(new Renderer(), 0, 1);
+        thread = new Thread(this);
+        thread.setDaemon(true);
+        thread.start();
 
-        ball.setGeschwindigkeit(geschwindigkeit);
-        ball.richtungX = ((int) (Math.random() * 2) == 0) ? 1 : -1;
-        ball.richtungY = ((int) (Math.random() * 2) == 0) ? 1 : -1;
-        ball.aufteilung = Math.random();
-        ball.start();
+        synchronized (ball) {
+            ball.setX(getWidth() / 2 - ball.durchmesser / 2);
+            ball.setY(getHeight() / 2 - ball.durchmesser / 2);
+            ball.richtungX = ((int) (Math.random() * 2) == 0) ? 1 : -1;
+            ball.richtungY = ((int) (Math.random() * 2) == 0) ? 1 : -1;
+            do {
+                ball.aufteilung = Math.random();
+            } while (ball.aufteilung > 0.6);
+            ball.setGeschwindigkeit(geschwindigkeit);
+        }
 
     }
 
@@ -109,9 +114,7 @@ public class Spielfeld extends JPanel {
         g2.setStroke(drawingStroke);
         g2.draw(line);
 
-        ballImage = new Ellipse2D.Double(ball.getX(), ball.getY(),
-                ball.getRadius(), ball.getRadius());
-        g2.fill(ballImage);
+        g2.fill(ball.ballImage);
 
 
         for (int i = echo.length - 1; i < 0; --i) {
@@ -119,7 +122,7 @@ public class Spielfeld extends JPanel {
             echo[i + 1].height -= 0d;
             echo[i + 1].width -= 0d;
         }
-        echo[0] = ballImage;
+        echo[0] = ball.ballImage;
 
     }
 
@@ -134,16 +137,19 @@ public class Spielfeld extends JPanel {
             ball.richtungY = ((int) (Math.random() * 2) == 0) ? 1 : -1;
             do {
                 ball.aufteilung = Math.random();
-            } while (ball.aufteilung < 0.3);
+            } while (ball.aufteilung > 0.6);
             ball.setGeschwindigkeit(geschwindigkeit);
         }
     }
 
-    private class Renderer extends TimerTask {
-
-        @Override
-        public void run() {
+    @Override
+    public void run() {
+        while (true) {
             repaint();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+            }
         }
     }
 }

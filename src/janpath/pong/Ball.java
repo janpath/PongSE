@@ -4,6 +4,7 @@
  */
 package janpath.pong;
 
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -21,6 +22,7 @@ public class Ball implements Runnable {
     public double aufteilung;
     private Spielfeld spielfeld;
     private Thread thread;
+    public Ellipse2D.Double ballImage;
     double[] debug = new double[4];
 
     public Ball(int x, int y, int radius, Spielfeld spielfeld) {
@@ -35,6 +37,10 @@ public class Ball implements Runnable {
         }
 
         this.durchmesser = radius;
+
+
+        ballImage = new Ellipse2D.Double(x, y,
+                durchmesser, durchmesser);
 
         thread = new Thread(this);
         thread.setDaemon(true);
@@ -79,11 +85,11 @@ public class Ball implements Runnable {
         return false;
     }
 
-    public int getRadius() {
+    public int getDurchmesser() {
         return durchmesser;
     }
 
-    public boolean setRadius(int radius) {
+    public boolean setDurchmesser(int radius) {
         this.durchmesser = radius;
         return true;
     }
@@ -98,7 +104,10 @@ public class Ball implements Runnable {
     public void run() {
         while (true) {
 
-            if (x <= 0 || x >= spielfeld.getWidth() - this.getRadius()) {
+            ballImage = new Ellipse2D.Double(x, y,
+                    durchmesser, durchmesser);
+
+            if (x <= 0 || x >= spielfeld.getWidth() - this.getDurchmesser()) {
                 PongSound.PONG_POINT.playSound();
                 spielfeld.resetBall();
                 continue;
@@ -120,26 +129,26 @@ public class Ball implements Runnable {
             //Schlaeger1
             synchronized (spielfeld.schlaeger1) {
                 if (amSchlag
-                        && spielfeld.ballImage.intersects(spielfeld.paddle1)) {
+                        && ballImage.intersects(spielfeld.paddle1)) {
                     richtungX *= -1;
 
                     double tmp;
-                    debug[0] = tmp = (spielfeld.schlaeger1.y + spielfeld.schlaeger1.height / 2) - (y + durchmesser / 2);
-                    debug[1] = tmp = tmp / (spielfeld.schlaeger1.height / 2);
-                    if (tmp >= 0) {
-                        debug[2] = tmp = 1 - tmp;
-                    } else {
-                        debug[2] = tmp = -1 - tmp;
+                    tmp = (spielfeld.schlaeger1.y + spielfeld.schlaeger1.height / 2) - (y + durchmesser / 2);
+                    tmp = tmp / (spielfeld.schlaeger1.height / 2);
+                    tmp = (tmp + aufteilung * richtungY * -1) / 2;
+                    
+                    aufteilung = (tmp >= 0) ? tmp : tmp * -1;
+                    
+                    if (aufteilung < 0.25) {
+                        aufteilung = 0.25;
                     }
-                    //debug[3] = tmp = (aufteilung * richtungY * -1 + tmp) / 2;
-                    if (tmp >= 0) {
-                        richtungY = 1;
-                        aufteilung = tmp;
-                    } else if (tmp < 0) {
-                        richtungY = -1;
-                        aufteilung = tmp * -1;
+                    
+                    if (aufteilung > 0.9) {
+                        aufteilung = 0.9;
                     }
-
+                    
+                    richtungY = (tmp >= 0) ? -1 : 1;
+                    
                     setGeschwindigkeit(999);
                     count = 0;
                     ++spielfeld.score;
@@ -150,26 +159,22 @@ public class Ball implements Runnable {
                 }
             }
 
-
+            //Schlaeger2
             synchronized (spielfeld.schlaeger2) {
                 if (amSchlag
-                        && spielfeld.ballImage.intersects(spielfeld.paddle2)) {
+                        && ballImage.intersects(spielfeld.paddle2)) {
                     richtungX *= -1;
 
                     double tmp;
-                    debug[0] = tmp = (spielfeld.schlaeger2.y + spielfeld.schlaeger2.height / 2) - (y + durchmesser / 2);
-                    debug[1] = tmp = tmp / (spielfeld.schlaeger2.height / 2);
+                    tmp = (spielfeld.schlaeger2.y + spielfeld.schlaeger2.height / 2) - (y + durchmesser / 2);
+                    tmp = tmp / (spielfeld.schlaeger2.height / 2);
+                    tmp = (tmp + aufteilung * richtungY * -1) / 2;
+
                     if (tmp >= 0) {
-                        debug[2] = tmp = 1 - tmp;
-                    } else {
-                        debug[2] = tmp = -1 - tmp;
-                    }
-                    //debug[3] = tmp = (aufteilung * richtungY * -1 + tmp) / 2;
-                    if (tmp >= 0) {
-                        richtungY = 1;
+                        richtungY = -1;
                         aufteilung = tmp;
                     } else if (tmp < 0) {
-                        richtungY = -1;
+                        richtungY = 1;
                         aufteilung = tmp * -1;
                     }
 
@@ -187,12 +192,12 @@ public class Ball implements Runnable {
             rect = new Rectangle2D.Double(rect.getX(), rect.getY(), 10,
                     rect.getHeight());
 
-            if (spielfeld.ballImage.intersects(rect) && !amSchlag) {
+            if (ballImage.intersects(rect) && !amSchlag) {
                 amSchlag = true;
             }
 
-            x += aufteilung * richtungX;
-            y += (1 - aufteilung) * richtungY;
+            x += (1 - aufteilung) * richtungX;
+            y += aufteilung * richtungY;
 
             if (count++ == 400) {
                 if (geschwindigkeit > 999) {
