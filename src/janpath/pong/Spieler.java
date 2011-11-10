@@ -16,6 +16,7 @@ public class Spieler extends Schlaeger {
 
 		MausSteuerung mausSteuerung = new MausSteuerung();
 
+		this.spielfeld.setFocusable(true);
 		this.spielfeld.addKeyListener(new Steuerung());
 		this.spielfeld.addMouseMotionListener(mausSteuerung);
 	}
@@ -33,33 +34,34 @@ public class Spieler extends Schlaeger {
 
 		private int geschwindigkeit;
 		private char richtung;
-		private Thread thread = new Thread(this);
+		private Thread thread;
 
 		private Steuerung() {
+			thread = new Thread(this);
 			thread.setDaemon(true);
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-
+			System.out.println(e);
 			int key = e.getKeyCode();
 
 			if (key == KeyEvent.VK_RIGHT) {
 				richtung = 'x';
-				geschwindigkeit = 1;
-				thread.start();
+				geschwindigkeit = -20;
+				thread.run();
 			} else if (key == KeyEvent.VK_LEFT) {
 				richtung = 'x';
-				geschwindigkeit = -1;
-				thread.start();
+				geschwindigkeit = 20;
+				thread.run();
 			} else if (key == KeyEvent.VK_UP) {
 				richtung = 'y';
-				geschwindigkeit = 1;
-				thread.start();
+				geschwindigkeit = -20;
+				thread.run();
 			} else if (key == KeyEvent.VK_DOWN) {
 				richtung = 'y';
-				geschwindigkeit = -1;
-				thread.start();
+				geschwindigkeit = 20;
+				thread.run();
 			}
 
 		}
@@ -76,6 +78,7 @@ public class Spieler extends Schlaeger {
 
 		@Override
 		public void run() {
+			System.out.println(richtung);
 			if (richtung == 'x') {
 				setX(getX() + geschwindigkeit);
 			} else if (richtung == 'y') {
