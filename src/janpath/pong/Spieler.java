@@ -4,6 +4,8 @@
 package janpath.pong;
 
 import java.awt.event.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -11,84 +13,107 @@ import java.awt.event.*;
  */
 public class Spieler extends Schlaeger {
 
-	public Spieler(int x, int y, int width, int height, Spielfeld spielfeld) {
-		super(x, y, width, height, spielfeld);
+    public Spieler(int x, int y, int width, int height, Spielfeld spielfeld) {
+	super(x, y, width, height, spielfeld);
 
-		MausSteuerung mausSteuerung = new MausSteuerung();
+	MausSteuerung mausSteuerung = new MausSteuerung();
 
-		this.spielfeld.setFocusable(true);
-		this.spielfeld.addKeyListener(new Steuerung());
-		this.spielfeld.addMouseMotionListener(mausSteuerung);
+	this.spielfeld.setFocusable(true);
+	this.spielfeld.addKeyListener(new Steuerung());
+	this.spielfeld.addMouseMotionListener(mausSteuerung);
+    }
+
+    private class MausSteuerung extends MouseMotionAdapter {
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	    setX(e.getX() - width/2);
+	    setY(e.getY() - height / 2);
+	}
+    }
+
+    private class Steuerung extends KeyAdapter implements Runnable {
+
+	private int richtungX;
+	private int richtungY;
+	private Thread thread;
+
+	private Steuerung() {
+	    thread = new Thread(this);
+	    thread.setDaemon(true);
+	    thread.start();
 	}
 
-	private class MausSteuerung extends MouseMotionAdapter {
+	@Override
+	public void keyPressed(KeyEvent e) {
 
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			//setX(e.getX() - width/2);
-			setY(e.getY() - height / 2);
+	    int key = e.getKeyCode();
+
+	    if (key == KeyEvent.VK_RIGHT) {
+		richtungX = 5;
+		synchronized (this) {
+		    notify();
 		}
+	    } else if (key == KeyEvent.VK_LEFT) {
+		richtungX = -5;
+		synchronized (this) {
+		    notify();
+		}
+	    } else if (key == KeyEvent.VK_UP) {
+		richtungY = -5;
+		synchronized (this) {
+		    notify();
+		}
+	    } else if (key == KeyEvent.VK_DOWN) {
+		richtungY = 5;
+		synchronized (this) {
+		    notify();
+		}
+	    }
+
 	}
 
-	private class Steuerung extends KeyAdapter implements Runnable {
+	@Override
+	public void keyReleased(KeyEvent e) {
+	    int key = e.getKeyCode();
 
-		private int geschwindigkeit;
-		private char richtung;
-		private Thread thread;
+	    if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT) {
+		richtungX = 0;
+	    } else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
+		richtungY = 0;
+	    }
+	}
 
-		private Steuerung() {
-			thread = new Thread(this);
-			thread.setDaemon(true);
+	@Override
+	public void run() {
+	    while (true) {
+		boolean stop = true;
+
+		if (richtungX != 0) {
+		    setX(getX() + richtungX);
+		    stop = false;
 		}
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			System.out.println(e);
-			int key = e.getKeyCode();
-
-			if (key == KeyEvent.VK_RIGHT) {
-				richtung = 'x';
-				geschwindigkeit = -20;
-				thread.run();
-			} else if (key == KeyEvent.VK_LEFT) {
-				richtung = 'x';
-				geschwindigkeit = 20;
-				thread.run();
-			} else if (key == KeyEvent.VK_UP) {
-				richtung = 'y';
-				geschwindigkeit = -20;
-				thread.run();
-			} else if (key == KeyEvent.VK_DOWN) {
-				richtung = 'y';
-				geschwindigkeit = 20;
-				thread.run();
-			}
-
+		if (richtungY != 0) {
+		    setY(getY() + richtungY);
+		    stop = false;
 		}
 
-		@Override
-		public void keyReleased(KeyEvent e) {
-			int key = e.getKeyCode();
-
-			if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT
-					|| key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
-				thread.interrupt();
-			}
-		}
-
-		@Override
-		public void run() {
-			System.out.println(richtung);
-			if (richtung == 'x') {
-				setX(getX() + geschwindigkeit);
-			} else if (richtung == 'y') {
-				setY(getY() + geschwindigkeit);
-			}
-
+		if (stop) {
+		    synchronized (this) {
 			try {
-				Thread.sleep(10);
+			    wait();
 			} catch (InterruptedException ex) {
 			}
+		    }
 		}
+
+
+		try {
+		    Thread.sleep(5);
+		} catch (InterruptedException ex) {
+		}
+	    }
 	}
+    }
 }
