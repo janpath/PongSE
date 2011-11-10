@@ -4,7 +4,6 @@
 package janpath.pong;
 
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -7,9 +7,7 @@ package janpath.pong;
  *
  * @author Jan Path
  */
-import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
-import javax.swing.*;
 
 public abstract class Schlaeger {
 

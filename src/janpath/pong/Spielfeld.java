@@ -7,8 +7,6 @@ package janpath.pong;
  *
  * @author Jan Path
  */
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
