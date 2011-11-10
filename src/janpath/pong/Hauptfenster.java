@@ -60,11 +60,9 @@ public class Hauptfenster extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == menuSpielNeu) {
-            spielfeld.scoreLeft = 0;
-            spielfeld.scoreRight = 0;
-            
-            spielfeld.scoreLabel.setText(spielfeld.scoreLeft + " : " + spielfeld.scoreRight);
-            
+            spielfeld.schlaeger1.score = 0;
+            spielfeld.schlaeger2.score = 0;
+
             spielfeld.resetBall();
 
         } else if (e.getSource() == menuSpielBeenden) {

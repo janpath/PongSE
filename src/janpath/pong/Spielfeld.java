@@ -24,7 +24,7 @@ public class Spielfeld extends JPanel implements Runnable {
     private Thread thread;
     public int geschwindigkeit = 999;
     public JLabel scoreLabelPlayer1;
-	public JLabel scoreLabelPlayer2;
+    public JLabel scoreLabelPlayer2;
     public Ellipse2D.Double[] echo = new Ellipse2D.Double[10];
 
     public Spielfeld(Rectangle rect) {
@@ -56,7 +56,7 @@ public class Spielfeld extends JPanel implements Runnable {
 
 
         add(scoreLabelPlayer1);
-	add(scoreLabelPlayer2);
+		add(scoreLabelPlayer2);
 
         thread = new Thread(this);
         thread.setDaemon(true);
