@@ -20,11 +20,10 @@ public class Spielfeld extends JPanel implements Runnable {
     public Ball ball;
     public Schlaeger schlaeger1;
     public Schlaeger schlaeger2;
-    public Rectangle2D.Double paddle1;
-    public Rectangle2D.Double paddle2;
     public Line2D.Double line;
     private Thread thread;
-    public int score;
+    public int scoreLeft;
+    public int scoreRight;
     public int geschwindigkeit = 999;
     public JLabel scoreLabel;
     public Ellipse2D.Double[] echo = new Ellipse2D.Double[10];
@@ -36,7 +35,7 @@ public class Spielfeld extends JPanel implements Runnable {
 
         setBackground(Color.BLACK);
 
-        schlaeger1 = new Computer(0, getHeight() / 2 - 45, 12, 90, this);
+        schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
         schlaeger2 = new Computer(getWidth() - 12, getHeight() / 2 - 45, 12, 90, this);
 
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);
@@ -46,15 +45,10 @@ public class Spielfeld extends JPanel implements Runnable {
 
         line = new Line2D.Double(getWidth() / 2, 0, getWidth() / 2, getHeight());
 
-        paddle1 = new Rectangle2D.Double(schlaeger1.getX(), schlaeger1.getY(),
-                schlaeger1.getWidth(), schlaeger1.getHeight());
-        paddle2 = new Rectangle2D.Double(schlaeger2.getX(), schlaeger2.getY(),
-                schlaeger2.getWidth(), schlaeger2.getHeight());
-
         setLayout(null);
         scoreLabel = new JLabel();
         scoreLabel.setBounds(100, 30, 200, 30);
-        scoreLabel.setText(String.valueOf(score));
+        scoreLabel.setText(scoreLeft + " : " + scoreRight);
 
         add(scoreLabel);
 
@@ -102,13 +96,10 @@ public class Spielfeld extends JPanel implements Runnable {
         Rectangle r1 = new Rectangle(0, 0, 1, 2);
         g2.setPaint(new TexturePaint(bi, r1));
 
-        paddle1 = new Rectangle2D.Double(schlaeger1.getX(), schlaeger1.getY(),
-                schlaeger1.getWidth(), schlaeger1.getHeight());
-        g2.fill(paddle1);
+        g2.fill(schlaeger1.paddleImage);
 
-        paddle2 = new Rectangle2D.Double(schlaeger2.getX(), schlaeger2.getY(),
-                schlaeger2.getWidth(), schlaeger2.getHeight());
-        g2.fill(paddle2);
+        g2.fill(schlaeger2.paddleImage);
+        
         Stroke drawingStroke = new BasicStroke(8, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_BEVEL, 0, new float[]{16}, 0);
         g2.setStroke(drawingStroke);
@@ -127,13 +118,19 @@ public class Spielfeld extends JPanel implements Runnable {
     }
 
     public void resetBall() {
-        score = 0;
-        scoreLabel.setText(String.valueOf(score));
 
+        resetBall(((int) (Math.random() * 2) == 0) ? 1 : -1);
+
+    }
+
+    public void resetBall(int richtung) {
         synchronized (ball) {
+            schlaeger1.amSchalg = true;
+            schlaeger2.amSchalg = true;
+
             ball.setX(getWidth() / 2 - ball.durchmesser / 2);
             ball.setY(getHeight() / 2 - ball.durchmesser / 2);
-            ball.richtungX = ((int) (Math.random() * 2) == 0) ? 1 : -1;
+            ball.richtungX = richtung;
             ball.richtungY = ((int) (Math.random() * 2) == 0) ? 1 : -1;
             do {
                 ball.aufteilung = Math.random();

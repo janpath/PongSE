@@ -9,6 +9,7 @@ package janpath.pong;
  * @author Jan Path
  */
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import javax.swing.*;
 
 public abstract class Schlaeger {
@@ -18,6 +19,8 @@ public abstract class Schlaeger {
     protected int width;
     protected int height;
     protected Spielfeld spielfeld;
+    public boolean amSchalg = true;
+    public Rectangle2D.Double paddleImage;
 
     public Schlaeger(int x, int y, int width, int height, Spielfeld spielfeld) {
 
@@ -27,6 +30,8 @@ public abstract class Schlaeger {
         this.height = height;
 
         this.spielfeld = spielfeld;
+        
+        paddleImage = new Rectangle2D.Double(this.x, this.y, this.width, this.height);
     }
 
     public int getX() {
@@ -34,8 +39,9 @@ public abstract class Schlaeger {
     }
 
     public void setX(int x) {
-        if (x >= 0 && x <= spielfeld.getWidth() / 2 - 100) {
+        if (x >= 0 && x <= spielfeld.getWidth()) {
             this.x = x;
+            paddleImage = new Rectangle2D.Double(this.x, this.y, this.width, this.height);
         }
     }
 
@@ -45,6 +51,7 @@ public abstract class Schlaeger {
 
     public void setY(int y) {
             this.y = y;
+            paddleImage.setRect(x, this.y, width, height);
     }
 
     public int getWidth() {

@@ -6,6 +6,8 @@ package janpath.pong;
 
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -107,9 +109,27 @@ public class Ball implements Runnable {
             ballImage = new Ellipse2D.Double(x, y,
                     durchmesser, durchmesser);
 
-            if (x <= 0 || x >= spielfeld.getWidth() - this.getDurchmesser()) {
+            if (x <= 0) {
                 PongSound.PONG_POINT.playSound();
-                spielfeld.resetBall();
+                ++spielfeld.scoreRight;
+                spielfeld.scoreLabel.setText(spielfeld.scoreLeft + " : " + spielfeld.scoreRight);
+                spielfeld.resetBall(-1);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Ball.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                continue;
+            } else if (x >= spielfeld.getWidth() - this.getDurchmesser()) {
+                PongSound.PONG_POINT.playSound();
+                ++spielfeld.scoreLeft;
+                spielfeld.scoreLabel.setText(spielfeld.scoreLeft + " : " + spielfeld.scoreRight);
+                spielfeld.resetBall(1);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Ball.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 continue;
             }
 
@@ -128,32 +148,31 @@ public class Ball implements Runnable {
 
             //Schlaeger1
             synchronized (spielfeld.schlaeger1) {
-                if (amSchlag
-                        && ballImage.intersects(spielfeld.paddle1)) {
+                if (spielfeld.schlaeger1.amSchalg
+                        && ballImage.intersects(spielfeld.schlaeger1.paddleImage)) {
                     richtungX *= -1;
 
                     double tmp;
                     tmp = (spielfeld.schlaeger1.y + spielfeld.schlaeger1.height / 2) - (y + durchmesser / 2);
                     tmp = tmp / (spielfeld.schlaeger1.height / 2);
                     tmp = (tmp + aufteilung * richtungY * -1) / 2;
-                    
+
                     aufteilung = (tmp >= 0) ? tmp : tmp * -1;
-                    
+
                     if (aufteilung < 0.25) {
                         aufteilung = 0.25;
                     }
-                    
+
                     if (aufteilung > 0.9) {
                         aufteilung = 0.9;
                     }
-                    
+
                     richtungY = (tmp >= 0) ? -1 : 1;
-                    
+
                     setGeschwindigkeit(999);
                     count = 0;
-                    ++spielfeld.score;
-                    spielfeld.scoreLabel.setText(String.valueOf(spielfeld.score));
-                    amSchlag = false;
+                    spielfeld.schlaeger1.amSchalg = false;
+                    spielfeld.schlaeger2.amSchalg = true;
                     PongSound.PONG_PADDLE.playSound();
 
                 }
@@ -161,8 +180,8 @@ public class Ball implements Runnable {
 
             //Schlaeger2
             synchronized (spielfeld.schlaeger2) {
-                if (amSchlag
-                        && ballImage.intersects(spielfeld.paddle2)) {
+                if (spielfeld.schlaeger2.amSchalg
+                        && ballImage.intersects(spielfeld.schlaeger2.paddleImage)) {
                     richtungX *= -1;
 
                     double tmp;
@@ -180,21 +199,13 @@ public class Ball implements Runnable {
 
                     setGeschwindigkeit(999);
                     count = 0;
-                    ++spielfeld.score;
-                    spielfeld.scoreLabel.setText(String.valueOf(spielfeld.score));
-                    amSchlag = false;
+                    spielfeld.schlaeger1.amSchalg = true;
+                    spielfeld.schlaeger2.amSchalg = false;
                     PongSound.PONG_PADDLE.playSound();
 
                 }
             }
 
-            Rectangle2D rect = spielfeld.line.getBounds2D();
-            rect = new Rectangle2D.Double(rect.getX(), rect.getY(), 10,
-                    rect.getHeight());
-
-            if (ballImage.intersects(rect) && !amSchlag) {
-                amSchlag = true;
-            }
 
             x += (1 - aufteilung) * richtungX;
             y += aufteilung * richtungY;

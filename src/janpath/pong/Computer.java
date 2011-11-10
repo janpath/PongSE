@@ -31,15 +31,15 @@ public class Computer extends Schlaeger implements Runnable {
         while (true) {
             double tmpY;
             if (spielfeld.ball.getX() - x < 500
-                    && spielfeld.ball.getX() - x > -500) {
+                    && spielfeld.ball.getX() - x > -500 && amSchalg) {
                 if ((tmpY = spielfeld.ball.getY() - getHeight() / 2
                         + spielfeld.ball.getDurchmesser() / 2 - y) != 0) {
 
                     synchronized (this) {
                         if (tmpY < 0) {
-                            --y;
+                            setY(y - 1);
                         } else if (tmpY > 0) {
-                            ++y;
+                            setY(y + 1);
                         }
                     }
                 }
@@ -67,9 +67,9 @@ public class Computer extends Schlaeger implements Runnable {
             } else {
                 tmpY = spielfeld.getHeight() / 2 - getHeight() / 2 - y;
                 if (tmpY < 0) {
-                    --y;
+                    setY(y - 1);
                 } else if (tmpY > 0) {
-                    ++y;
+                    setY(y + 1);
                 }
 
                 try {
