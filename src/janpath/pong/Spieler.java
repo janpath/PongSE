@@ -11,7 +11,7 @@ import java.awt.event.*;
  * @author Jan
  */
 public class Spieler extends Schlaeger {
-
+		
     public Spieler(int x, int y, int width, int height, Spielfeld spielfeld) {
         super(x, y, width, height, spielfeld);
 

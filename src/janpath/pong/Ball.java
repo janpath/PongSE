@@ -111,9 +111,10 @@ public class Ball implements Runnable {
 
             if (x <= 0) {
                 PongSound.PONG_POINT.playSound();
-                ++spielfeld.scoreRight;
-                spielfeld.scoreLabel.setText(spielfeld.scoreLeft + " : " + spielfeld.scoreRight);
                 spielfeld.resetBall(-1);
+                ++spielfeld.schlaeger2.score;
+                spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
+                spielfeld.resetBall();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
@@ -122,14 +123,26 @@ public class Ball implements Runnable {
                 continue;
             } else if (x >= spielfeld.getWidth() - this.getDurchmesser()) {
                 PongSound.PONG_POINT.playSound();
-                ++spielfeld.scoreLeft;
-                spielfeld.scoreLabel.setText(spielfeld.scoreLeft + " : " + spielfeld.scoreRight);
                 spielfeld.resetBall(1);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Ball.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
+		++spielfeld.schlaeger1.score;
+                spielfeld.scoreLabelPlayer1.setText(String.valueOf(spielfeld.schlaeger1.score));
+                spielfeld.resetBall(1);
+                continue;
+            }
+			
+            if (x >= spielfeld.getWidth() - this.getDurchmesser()) {
+                PongSound.PONG_POINT.playSound();
+		++spielfeld.schlaeger1.score;
+                
+                spielfeld.scoreLabelPlayer1.setText(String.valueOf(spielfeld.schlaeger1.score));
+                spielfeld.resetBall();
+
                 continue;
             }
 
@@ -171,8 +184,12 @@ public class Ball implements Runnable {
 
                     setGeschwindigkeit(999);
                     count = 0;
+
                     spielfeld.schlaeger1.amSchalg = false;
                     spielfeld.schlaeger2.amSchalg = true;
+
+                    amSchlag = false;
+
                     PongSound.PONG_PADDLE.playSound();
 
                 }
@@ -199,8 +216,12 @@ public class Ball implements Runnable {
 
                     setGeschwindigkeit(999);
                     count = 0;
+
                     spielfeld.schlaeger1.amSchalg = true;
                     spielfeld.schlaeger2.amSchalg = false;
+
+                    amSchlag = false;
+
                     PongSound.PONG_PADDLE.playSound();
 
                 }

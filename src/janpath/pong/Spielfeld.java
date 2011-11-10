@@ -22,10 +22,9 @@ public class Spielfeld extends JPanel implements Runnable {
     public Schlaeger schlaeger2;
     public Line2D.Double line;
     private Thread thread;
-    public int scoreLeft;
-    public int scoreRight;
     public int geschwindigkeit = 999;
-    public JLabel scoreLabel;
+    public JLabel scoreLabelPlayer1;
+	public JLabel scoreLabelPlayer2;
     public Ellipse2D.Double[] echo = new Ellipse2D.Double[10];
 
     public Spielfeld(Rectangle rect) {
@@ -46,11 +45,18 @@ public class Spielfeld extends JPanel implements Runnable {
         line = new Line2D.Double(getWidth() / 2, 0, getWidth() / 2, getHeight());
 
         setLayout(null);
-        scoreLabel = new JLabel();
-        scoreLabel.setBounds(100, 30, 200, 30);
-        scoreLabel.setText(scoreLeft + " : " + scoreRight);
 
-        add(scoreLabel);
+        scoreLabelPlayer1 = new JLabel();
+        scoreLabelPlayer1.setBounds(100, 30, 200, 30);
+        scoreLabelPlayer1.setText(String.valueOf(schlaeger1.score));
+		
+	scoreLabelPlayer2 = new JLabel();
+        scoreLabelPlayer2.setBounds(getWidth() - 100, 30, 200, 30);
+        scoreLabelPlayer2.setText(String.valueOf(schlaeger2.score));
+
+
+        add(scoreLabelPlayer1);
+	add(scoreLabelPlayer2);
 
         thread = new Thread(this);
         thread.setDaemon(true);
@@ -124,6 +130,8 @@ public class Spielfeld extends JPanel implements Runnable {
     }
 
     public void resetBall(int richtung) {
+
+
         synchronized (ball) {
             schlaeger1.amSchalg = true;
             schlaeger2.amSchalg = true;

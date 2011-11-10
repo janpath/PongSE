@@ -18,6 +18,7 @@ public abstract class Schlaeger {
     protected int y;
     protected int width;
     protected int height;
+	protected int score = 0;
     protected Spielfeld spielfeld;
     public boolean amSchalg = true;
     public Rectangle2D.Double paddleImage;
