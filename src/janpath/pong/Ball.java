@@ -114,7 +114,7 @@ public class Ball implements Runnable {
                 spielfeld.resetBall(-1);
                 ++spielfeld.schlaeger2.score;
                 spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
-                spielfeld.resetBall();
+                spielfeld.resetBall(-1);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {

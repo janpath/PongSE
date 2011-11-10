@@ -133,9 +133,6 @@ public class Spielfeld extends JPanel implements Runnable {
 
 
         synchronized (ball) {
-            schlaeger1.amSchalg = true;
-            schlaeger2.amSchalg = true;
-
             ball.setX(getWidth() / 2 - ball.durchmesser / 2);
             ball.setY(getHeight() / 2 - ball.durchmesser / 2);
             ball.richtungX = richtung;
@@ -143,6 +140,10 @@ public class Spielfeld extends JPanel implements Runnable {
             do {
                 ball.aufteilung = Math.random();
             } while (ball.aufteilung > 0.6);
+            
+            schlaeger1.amSchalg = true;
+            schlaeger2.amSchalg = true;
+
             ball.setGeschwindigkeit(geschwindigkeit);
         }
     }
