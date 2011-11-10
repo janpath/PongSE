@@ -17,6 +17,7 @@ public abstract class Schlaeger {
     protected int y;
     protected int width;
     protected int height;
+	protected int score = 0;
     protected Spielfeld spielfeld;
 
     public Schlaeger(int x, int y, int width, int height, Spielfeld spielfeld) {

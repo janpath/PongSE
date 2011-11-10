@@ -107,8 +107,18 @@ public class Ball implements Runnable {
             ballImage = new Ellipse2D.Double(x, y,
                     durchmesser, durchmesser);
 
-            if (x <= 0 || x >= spielfeld.getWidth() - this.getDurchmesser()) {
+            if (x <= 0) {
                 PongSound.PONG_POINT.playSound();
+				++spielfeld.schlaeger2.score;
+				spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
+                spielfeld.resetBall();
+                continue;
+            }
+			
+			if (x >= spielfeld.getWidth() - this.getDurchmesser()) {
+                PongSound.PONG_POINT.playSound();
+				++spielfeld.schlaeger1.score;
+				spielfeld.scoreLabelPlayer1.setText(String.valueOf(spielfeld.schlaeger1.score));
                 spielfeld.resetBall();
                 continue;
             }
@@ -151,8 +161,6 @@ public class Ball implements Runnable {
                     
                     setGeschwindigkeit(999);
                     count = 0;
-                    ++spielfeld.score;
-                    spielfeld.scoreLabel.setText(String.valueOf(spielfeld.score));
                     amSchlag = false;
                     PongSound.PONG_PADDLE.playSound();
 
@@ -180,8 +188,6 @@ public class Ball implements Runnable {
 
                     setGeschwindigkeit(999);
                     count = 0;
-                    ++spielfeld.score;
-                    spielfeld.scoreLabel.setText(String.valueOf(spielfeld.score));
                     amSchlag = false;
                     PongSound.PONG_PADDLE.playSound();
 

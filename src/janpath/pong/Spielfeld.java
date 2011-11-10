@@ -24,9 +24,9 @@ public class Spielfeld extends JPanel implements Runnable {
     public Rectangle2D.Double paddle2;
     public Line2D.Double line;
     private Thread thread;
-    public int score;
     public int geschwindigkeit = 999;
-    public JLabel scoreLabel;
+    public JLabel scoreLabelPlayer1;
+	public JLabel scoreLabelPlayer2;
     public Ellipse2D.Double[] echo = new Ellipse2D.Double[10];
 
     public Spielfeld(Rectangle rect) {
@@ -36,7 +36,7 @@ public class Spielfeld extends JPanel implements Runnable {
 
         setBackground(Color.BLACK);
 
-        schlaeger1 = new Computer(0, getHeight() / 2 - 45, 12, 90, this);
+        schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
         schlaeger2 = new Computer(getWidth() - 12, getHeight() / 2 - 45, 12, 90, this);
 
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);
@@ -52,11 +52,16 @@ public class Spielfeld extends JPanel implements Runnable {
                 schlaeger2.getWidth(), schlaeger2.getHeight());
 
         setLayout(null);
-        scoreLabel = new JLabel();
-        scoreLabel.setBounds(100, 30, 200, 30);
-        scoreLabel.setText(String.valueOf(score));
+        scoreLabelPlayer1 = new JLabel();
+        scoreLabelPlayer1.setBounds(100, 30, 200, 30);
+        scoreLabelPlayer1.setText(String.valueOf(schlaeger1.score));
+		
+		scoreLabelPlayer2 = new JLabel();
+        scoreLabelPlayer2.setBounds(getWidth() - 100, 30, 200, 30);
+        scoreLabelPlayer2.setText(String.valueOf(schlaeger2.score));
 
-        add(scoreLabel);
+        add(scoreLabelPlayer1);
+		add(scoreLabelPlayer2);
 
         thread = new Thread(this);
         thread.setDaemon(true);
@@ -127,9 +132,6 @@ public class Spielfeld extends JPanel implements Runnable {
     }
 
     public void resetBall() {
-        score = 0;
-        scoreLabel.setText(String.valueOf(score));
-
         synchronized (ball) {
             ball.setX(getWidth() / 2 - ball.durchmesser / 2);
             ball.setY(getHeight() / 2 - ball.durchmesser / 2);
