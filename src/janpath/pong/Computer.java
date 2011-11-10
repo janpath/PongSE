@@ -33,7 +33,7 @@ public class Computer extends Schlaeger implements Runnable {
             if (spielfeld.ball.getX() - x < 500
                     && spielfeld.ball.getX() - x > -500) {
                 if ((tmpY = spielfeld.ball.getY() - getHeight() / 2
-                        + spielfeld.ball.getRadius() / 2 - y) != 0) {
+                        + spielfeld.ball.getDurchmesser() / 2 - y) != 0) {
 
                     synchronized (this) {
                         if (tmpY < 0) {
@@ -44,26 +44,25 @@ public class Computer extends Schlaeger implements Runnable {
                     }
                 }
 
-                /*int random2 = (int) (Math.random() * 5000);
+                int random2 = (int) (Math.random() * 5000);
                 if (random2 <= 5) {
-                r3 = (int) (Math.random() * 5) + 1;
+                    r3 = (int) (Math.random() * 5) + 1;
                 } else if (random2 > 500 && random2 < 4950) {
-                
                 } else {
-                if (r2 != 0) {
-                --r2;
+                    if (r2 != 0) {
+                        --r2;
+                    }
+                    r3 = 0;
                 }
-                r3 = 0;
+
+                if (r2 < r3) {
+                    ++r2;
                 }
-                
-                if (r2 < r3)
-                ++r2;
-                
+
                 try {
-                Thread.sleep(r2);
+                    Thread.sleep(r2);
                 } catch (InterruptedException e) {
-                e.printStackTrace();
-                }*/
+                }
 
             } else {
                 tmpY = spielfeld.getHeight() / 2 - getHeight() / 2 - y;
@@ -76,8 +75,6 @@ public class Computer extends Schlaeger implements Runnable {
                 try {
                     Thread.sleep(4, 500);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
 
@@ -85,8 +82,6 @@ public class Computer extends Schlaeger implements Runnable {
                 Thread.sleep((int) (Math.random() * 3 + 1),
                         (int) (Math.random() * 1000));
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         }
     }
