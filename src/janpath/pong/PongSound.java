@@ -5,16 +5,15 @@ import java.io.*;
 import javax.sound.sampled.*;
 
 public class PongSound {
+
 	private Clip clip;
-	
-	public static final PongSound PONG_WALL = new PongSound(PongSound.class.getClass().getResourceAsStream("/janpath/pong/sound/pongWall.wav"));;
+	public static final PongSound PONG_WALL = new PongSound(PongSound.class.getClass().getResourceAsStream("/janpath/pong/sound/pongWall.wav"));
 	public static final PongSound PONG_PADDLE = new PongSound(PongSound.class.getClass().getResourceAsStream("/janpath/pong/sound/pongPaddle.wav"));
 	public static final PongSound PONG_POINT = new PongSound(PongSound.class.getClass().getResourceAsStream("/janpath/pong/sound/pongPoint.wav"));
-
 	private AudioInputStream ais;
-	
+
 	private PongSound(InputStream file) {
-			
+
 		try {
 			ais = AudioSystem.getAudioInputStream(file);
 			AudioFormat format = ais.getFormat();
@@ -34,7 +33,7 @@ public class PongSound {
 			} else {
 				clip.loop(1);
 			}
-			
+
 		} catch (LineUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,8 +41,7 @@ public class PongSound {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 
 	}
-
 }
