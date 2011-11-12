@@ -19,13 +19,22 @@ public class Main {
 	PongSound.PONG_POINT.hashCode();
 
 	//Einstellungen laden
-	File probFile = new File(".properties");
+	File probFile = new File("pong.properties");
 	if (probFile.isFile()) {
 	    try {
 		PongProperties.prop.load(new FileInputStream(probFile));
-	    } catch (IOException ex) {
+                PongProperties.prop.setProperty("control", "mouse");
+                FileOutputStream probOut = new FileOutputStream(probFile);
+                PongProperties.prop.store(probOut, "");
+                } catch (IOException ex) {
 	    }
-	}
+	} else {
+            try {
+                FileOutputStream probOut = new FileOutputStream(probFile);
+                PongProperties.prop.setProperty("control", "mouse");
+                PongProperties.prop.store(probOut, "");
+            } catch (Exception ex) {}
+        }
 	
 	Hauptfenster fenster = new Hauptfenster();
 	fenster.setVisible(true);

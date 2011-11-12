@@ -20,9 +20,9 @@ public class Spieler extends Schlaeger {
 	
 	this.spielfeld.setFocusable(true);
 	
-	if (PongProperties.prop.getProperty("control", "mouse").equalsIgnoreCase("keyboard")) {
+	if (PongProperties.prop.getProperty("control").equalsIgnoreCase("keyboard")) {
 	    this.spielfeld.addKeyListener(new KeyboardSteuerung());
-	} else if (PongProperties.prop.getProperty("control", "mouse").equalsIgnoreCase("mouse")) {
+	} else if (PongProperties.prop.getProperty("control").equalsIgnoreCase("mouse")) {
 	    this.spielfeld.addMouseMotionListener(mausSteuerung);
 	} else {
 	    System.err.println("Steuerungungsoption " + PongProperties.prop.getProperty("control") + " nicht vorhanden!");
