@@ -182,7 +182,7 @@ public class Ball implements Runnable {
 
 					spielfeld.schlaeger1.amSchalg = false;
 					spielfeld.schlaeger2.amSchalg = true;
-					
+
 					PongSound.PONG_PADDLE.playSound();
 
 				}

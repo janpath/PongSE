@@ -61,9 +61,9 @@ public class Hauptfenster extends JFrame implements ActionListener {
 		if (e.getSource() == menuSpielNeu) {
 			spielfeld.schlaeger1.score = 0;
 			spielfeld.schlaeger2.score = 0;
-                        
-                        spielfeld.scoreLabelPlayer1.setText(String.valueOf(spielfeld.schlaeger1.score));
-                        spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
+
+			spielfeld.scoreLabelPlayer1.setText(String.valueOf(spielfeld.schlaeger1.score));
+			spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
 
 			spielfeld.resetBall();
 

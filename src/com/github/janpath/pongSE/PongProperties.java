@@ -8,9 +8,9 @@ package com.github.janpath.pongSE;
  *
  * @author Jan
  */
-
 import java.util.Properties;
 
 public interface PongProperties {
-    Properties prop = new Properties();
+
+	Properties prop = new Properties();
 }
