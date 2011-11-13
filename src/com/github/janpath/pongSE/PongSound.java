@@ -8,9 +8,9 @@ import javax.sound.sampled.*;
 public class PongSound {
 
 	private Clip clip;
-	public static final PongSound PONG_WALL = new PongSound(PongSound.class.getClass().getResource("/janpath/pong/sound/pongWall.wav"));
-	public static final PongSound PONG_PADDLE = new PongSound(PongSound.class.getClass().getResource("/janpath/pong/sound/pongPaddle.wav"));
-	public static final PongSound PONG_POINT = new PongSound(PongSound.class.getClass().getResource("/janpath/pong/sound/pongPoint.wav"));
+	public static final PongSound PONG_WALL = new PongSound(PongSound.class.getClass().getResource("/com/github/janpath/pongSE/sound/pongWall.wav"));
+	public static final PongSound PONG_PADDLE = new PongSound(PongSound.class.getClass().getResource("/com/github/janpath/pongSE/sound/pongPaddle.wav"));
+	public static final PongSound PONG_POINT = new PongSound(PongSound.class.getClass().getResource("/com/github/janpath/pongSE/sound/pongPoint.wav"));
 	private AudioInputStream ais;
 
 	private PongSound(URL file) {
