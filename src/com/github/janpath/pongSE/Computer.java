@@ -1,4 +1,4 @@
-package janpath.pong;
+package com.github.janpath.pongSE;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
