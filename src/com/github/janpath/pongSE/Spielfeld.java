@@ -9,6 +9,7 @@ package com.github.janpath.pongSE;
  */
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 
@@ -32,6 +33,14 @@ public class Spielfeld extends JPanel implements Runnable {
 		setBackground(Color.BLACK);
 
 		schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
+		try {
+			((Spieler) schlaeger1).up = Integer.parseInt(PongProperties.prop.getProperty("player1Up", String.valueOf(KeyEvent.VK_UP)));
+			((Spieler) schlaeger1).down = Integer.parseInt(PongProperties.prop.getProperty("player1Down", String.valueOf(KeyEvent.VK_DOWN)));
+			((Spieler) schlaeger1).left = Integer.parseInt(PongProperties.prop.getProperty("player1Left", String.valueOf(KeyEvent.VK_LEFT)));
+			((Spieler) schlaeger1).right = Integer.parseInt(PongProperties.prop.getProperty("player1Right", String.valueOf(KeyEvent.VK_RIGHT)));
+		} catch (NumberFormatException e) {
+		}
+
 		schlaeger2 = new Computer(getWidth() - 12, getHeight() / 2 - 45, 12, 90, this);
 
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);

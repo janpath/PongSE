@@ -12,7 +12,12 @@ import java.util.logging.Logger;
  * @author Jan
  */
 public class Spieler extends Schlaeger {
-
+	
+	public int up;
+	public int down;
+	public int left;
+	public int right;
+	
 	public Spieler(int x, int y, int width, int height, Spielfeld spielfeld) {
 		super(x, y, width, height, spielfeld);
 
@@ -27,6 +32,12 @@ public class Spieler extends Schlaeger {
 		} else {
 			System.err.println("Steuerungungsoption " + PongProperties.prop.getProperty("control") + " nicht vorhanden!");
 		}
+		
+		up = KeyEvent.VK_UP;
+		down = KeyEvent.VK_DOWN;
+		left = KeyEvent.VK_LEFT;
+		right = KeyEvent.VK_RIGHT;
+		
 	}
 
 	private class MausSteuerung extends MouseMotionAdapter {
