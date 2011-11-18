@@ -8,11 +8,7 @@ package com.github.janpath.pongSE;
  *
  * @author Jan
  */
-import java.awt.Event;
-import java.awt.GridBagLayout;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 import java.awt.event.*;
 import java.io.*;
@@ -205,6 +201,7 @@ public class PongProperties {
 				spieler1Hoch.setToolTipText("Hoch");
 				spieler1Hoch.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -219,6 +216,7 @@ public class PongProperties {
 				spieler1Runter.setToolTipText("Runter");
 				spieler1Runter.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -233,6 +231,7 @@ public class PongProperties {
 				spieler1Links.setToolTipText("Links");
 				spieler1Links.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -247,6 +246,7 @@ public class PongProperties {
 				spieler1Rechts.setToolTipText("Rechts");
 				spieler1Rechts.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -306,6 +306,7 @@ public class PongProperties {
 				spieler2Hoch.setToolTipText("Hoch");
 				spieler2Hoch.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -320,6 +321,7 @@ public class PongProperties {
 				spieler2Runter.setToolTipText("Runter");
 				spieler2Runter.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -334,6 +336,7 @@ public class PongProperties {
 				spieler2Links.setToolTipText("Links");
 				spieler2Links.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -349,6 +352,7 @@ public class PongProperties {
 				spieler2Rechts.setToolTipText("Rechts");
 				spieler2Rechts.addItemListener(new java.awt.event.ItemListener() {
 
+					@Override
 					public void itemStateChanged(java.awt.event.ItemEvent evt) {
 						contolButtons(evt);
 					}
@@ -428,6 +432,7 @@ public class PongProperties {
 				okButton.setText("Ok");
 				okButton.addActionListener(new java.awt.event.ActionListener() {
 
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						okButtonActionPerformed(evt);
 					}
@@ -441,6 +446,7 @@ public class PongProperties {
 				setButton.setText("Übernehmen");
 				setButton.addActionListener(new java.awt.event.ActionListener() {
 
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						setButtonActionPerformed(evt);
 					}
@@ -454,6 +460,7 @@ public class PongProperties {
 				abortButton.setText("Abbrechen");
 				abortButton.addActionListener(new java.awt.event.ActionListener() {
 
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						abortButtonActionPerformed(evt);
 					}
@@ -479,6 +486,12 @@ public class PongProperties {
 			}// </editor-fold>
 
 			private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
+				if ("Maus".equals(buttonGroup1.getSelection().getActionCommand())) {
+					propBuffer.setProperty("control", "mouse");
+				} else if("Tastatur".equals(buttonGroup1.getSelection().getActionCommand())) {
+					propBuffer.setProperty("control", "keyboard");
+				}
+				
 				prop = propBuffer;
 				store();
 				dialog.setVisible(false);
@@ -486,6 +499,12 @@ public class PongProperties {
 			}
 
 			private void setButtonActionPerformed(java.awt.event.ActionEvent evt) {
+				if ("Maus".equals(buttonGroup1.getSelection().getActionCommand())) {
+					propBuffer.setProperty("control", "mouse");
+				} else if("Tastatur".equals(buttonGroup1.getSelection().getActionCommand())) {
+					propBuffer.setProperty("control", "keyboard");
+				}
+				
 				prop = propBuffer;
 				store();
 			}
