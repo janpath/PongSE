@@ -80,7 +80,7 @@ public class Hauptfenster extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == menuExtrasOptionen) {
-			
+			PongProperties.showDialog();
 		}
 	}
 }
