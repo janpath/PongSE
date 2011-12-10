@@ -222,7 +222,7 @@ public class Ball implements Runnable {
 			x += (1 - aufteilung) * richtungX;
 			y += aufteilung * richtungY;
 
-			if (count++ == 400) {
+			if (count++ >= 100) {
 				if (geschwindigkeit > 999) {
 					setGeschwindigkeit(geschwindigkeit - 1);
 				}

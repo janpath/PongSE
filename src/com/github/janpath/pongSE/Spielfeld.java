@@ -23,25 +23,41 @@ public class Spielfeld extends JPanel implements Runnable {
 	public int geschwindigkeit = 999;
 	public JLabel scoreLabelPlayer1;
 	public JLabel scoreLabelPlayer2;
-	public Ellipse2D.Double[] echo = new Ellipse2D.Double[10];
+	public Ellipse2D.Double[] echo = new Ellipse2D.Double[20];
+	private int count;
+	private double alphaabnahme = 0xff / echo.length;
+	private double durchmesserabnahme;
+	private int echodichte = 3;
 
 	public Spielfeld(Rectangle rect) {
 		setBounds(rect);
 
 		ball = new Ball((getWidth() / 2) - 6, (getHeight() / 2) - 6, 12, this);
+		durchmesserabnahme = (double) ball.durchmesser / (double) echo.length;
 
 		setBackground(Color.BLACK);
 
-		schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
-		try {
-			((Spieler) schlaeger1).up = Integer.parseInt(PongProperties.prop.getProperty("player1Up", String.valueOf(KeyEvent.VK_UP)));
-			((Spieler) schlaeger1).down = Integer.parseInt(PongProperties.prop.getProperty("player1Down", String.valueOf(KeyEvent.VK_DOWN)));
-			((Spieler) schlaeger1).left = Integer.parseInt(PongProperties.prop.getProperty("player1Left", String.valueOf(KeyEvent.VK_LEFT)));
-			((Spieler) schlaeger1).right = Integer.parseInt(PongProperties.prop.getProperty("player1Right", String.valueOf(KeyEvent.VK_RIGHT)));
-		} catch (NumberFormatException e) {
+		schlaeger1 = new Computer(0, getHeight() / 2 - 45, 12, 90, this);
+		if (schlaeger1 instanceof Spieler) {
+			try {
+				((Spieler) schlaeger1).up = Integer.parseInt(PongProperties.prop.getProperty("player1Up", String.valueOf(KeyEvent.VK_UP)));
+				((Spieler) schlaeger1).down = Integer.parseInt(PongProperties.prop.getProperty("player1Down", String.valueOf(KeyEvent.VK_DOWN)));
+				((Spieler) schlaeger1).left = Integer.parseInt(PongProperties.prop.getProperty("player1Left", String.valueOf(KeyEvent.VK_LEFT)));
+				((Spieler) schlaeger1).right = Integer.parseInt(PongProperties.prop.getProperty("player1Right", String.valueOf(KeyEvent.VK_RIGHT)));
+			} catch (NumberFormatException e) {
+			}
 		}
 
 		schlaeger2 = new Computer(getWidth() - 12, getHeight() / 2 - 45, 12, 90, this);
+		if (schlaeger2 instanceof Spieler) {
+			try {
+				((Spieler) schlaeger2).up = Integer.parseInt(PongProperties.prop.getProperty("player2Up", String.valueOf(KeyEvent.VK_UP)));
+				((Spieler) schlaeger2).down = Integer.parseInt(PongProperties.prop.getProperty("player2Down", String.valueOf(KeyEvent.VK_DOWN)));
+				((Spieler) schlaeger2).left = Integer.parseInt(PongProperties.prop.getProperty("player2Left", String.valueOf(KeyEvent.VK_LEFT)));
+				((Spieler) schlaeger2).right = Integer.parseInt(PongProperties.prop.getProperty("player2Right", String.valueOf(KeyEvent.VK_RIGHT)));
+			} catch (NumberFormatException e) {
+			}
+		}
 
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TRANSLUCENT);
 		Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(img,
@@ -89,11 +105,16 @@ public class Spielfeld extends JPanel implements Runnable {
 		Graphics2D g2 = (Graphics2D) g;
 
 		g2.setColor(Color.RED);
-		int alpha = 0xFF;
+		double alpha = 0xFF;
 		for (int i = 0; i < echo.length; ++i) {
 			if (echo[i] != null) {
-				g2.setColor(new Color(0xFF, 00, 00, (alpha -= 20)));
+				g2.setColor(new Color(0xFF, 00, 00, (int) alpha));
 				g2.fill(echo[i]);
+				alpha -= alphaabnahme;
+				
+				if (alpha < 0)
+					alpha = 0;
+				
 			} else {
 				break;
 			}
@@ -120,12 +141,19 @@ public class Spielfeld extends JPanel implements Runnable {
 		g2.fill(ball.ballImage);
 
 
-		for (int i = echo.length - 1; i < 0; --i) {
-			echo[i + 1] = echo[i];
-			echo[i + 1].height -= 0d;
-			echo[i + 1].width -= 0d;
+		if (++count > echodichte) {
+			for (int i = echo.length - 1; i > 0; --i) {
+				echo[i] = echo[i - 1];
+				if (echo[i] != null) {
+					echo[i].height -= durchmesserabnahme;
+					echo[i].width -= durchmesserabnahme;
+					echo[i].y += durchmesserabnahme / 2;
+					echo[i].x += durchmesserabnahme / 2;
+				}
+			}
+			echo[0] = ball.ballImage;
+			count = 0;
 		}
-		echo[0] = ball.ballImage;
 
 	}
 
