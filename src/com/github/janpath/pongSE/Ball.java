@@ -109,20 +109,20 @@ public class Ball implements Runnable {
 				PongSound.PONG_POINT.playSound();
 				++spielfeld.schlaeger2.score;
 				spielfeld.scoreLabelPlayer2.setText(String.valueOf(spielfeld.schlaeger2.score));
-				spielfeld.resetBall(-1);
+				setGeschwindigkeit(0);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException ex) {
-					Logger.getLogger(Ball.class.getName()).log(Level.SEVERE, null, ex);
 				}
+				
+				spielfeld.resetBall(-1);
 				continue;
 			} else if (x >= spielfeld.getWidth() - this.getDurchmesser()) {
 				PongSound.PONG_POINT.playSound();
-				spielfeld.resetBall(1);
+				setGeschwindigkeit(0);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException ex) {
-					Logger.getLogger(Ball.class.getName()).log(Level.SEVERE, null, ex);
 				}
 
 				++spielfeld.schlaeger1.score;

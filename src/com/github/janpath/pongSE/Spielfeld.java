@@ -15,19 +15,20 @@ import java.awt.image.BufferedImage;
 
 public class Spielfeld extends JPanel implements Runnable {
 
-	public Ball ball;
-	public Schlaeger schlaeger1;
-	public Schlaeger schlaeger2;
+	public final Ball ball;
+	public final Schlaeger schlaeger1;
+	public final Schlaeger schlaeger2;
 	public Line2D.Double line;
 	private Thread thread;
 	public int geschwindigkeit = 999;
 	public JLabel scoreLabelPlayer1;
 	public JLabel scoreLabelPlayer2;
-	public Ellipse2D.Double[] echo = new Ellipse2D.Double[20];
+	public Ellipse2D.Double[] echo = new Ellipse2D.Double[15];
 	private int count;
-	private double alphaabnahme = 0xff / echo.length;
+	private int maxAlpha = 0xFF;
+	private double alphaabnahme = (double) maxAlpha / echo.length;
 	private double durchmesserabnahme;
-	private int echodichte = 3;
+	private int echodichte = 0;
 
 	public Spielfeld(Rectangle rect) {
 		setBounds(rect);
@@ -37,7 +38,7 @@ public class Spielfeld extends JPanel implements Runnable {
 
 		setBackground(Color.BLACK);
 
-		schlaeger1 = new Computer(0, getHeight() / 2 - 45, 12, 90, this);
+		schlaeger1 = new Spieler(0, getHeight() / 2 - 45, 12, 90, this);
 		if (schlaeger1 instanceof Spieler) {
 			try {
 				((Spieler) schlaeger1).up = Integer.parseInt(PongProperties.prop.getProperty("player1Up", String.valueOf(KeyEvent.VK_UP)));
@@ -104,8 +105,22 @@ public class Spielfeld extends JPanel implements Runnable {
 
 		Graphics2D g2 = (Graphics2D) g;
 
-		g2.setColor(Color.RED);
-		double alpha = 0xFF;
+		BufferedImage bi = new BufferedImage(1, 2, BufferedImage.TYPE_INT_RGB);
+		Graphics2D big = bi.createGraphics();
+		big.setColor(Color.WHITE);
+		big.fillRect(0, 0, 1, 1);
+		big.setColor(new Color(0x555555));
+		big.fillRect(0, 1, 1, 1);
+		Rectangle r1 = new Rectangle(0, 0, 1, 2);
+		Paint paint = new TexturePaint(bi, r1);
+		g2.setPaint(paint);
+		
+		Stroke drawingStroke = new BasicStroke(8, BasicStroke.CAP_BUTT,
+				BasicStroke.JOIN_BEVEL, 0, new float[]{16}, 0);
+		g2.setStroke(drawingStroke);
+		g2.draw(line);
+		
+		double alpha = maxAlpha;
 		for (int i = 0; i < echo.length; ++i) {
 			if (echo[i] != null) {
 				g2.setColor(new Color(0xFF, 00, 00, (int) alpha));
@@ -119,27 +134,13 @@ public class Spielfeld extends JPanel implements Runnable {
 				break;
 			}
 		}
-
-		BufferedImage bi = new BufferedImage(1, 2, BufferedImage.TYPE_INT_RGB);
-		Graphics2D big = bi.createGraphics();
-		big.setColor(Color.WHITE);
-		big.fillRect(0, 0, 1, 1);
-		big.setColor(new Color(0x555555));
-		big.fillRect(0, 1, 1, 1);
-		Rectangle r1 = new Rectangle(0, 0, 1, 2);
-		g2.setPaint(new TexturePaint(bi, r1));
-
-		g2.fill(schlaeger1.paddleImage);
-
-		g2.fill(schlaeger2.paddleImage);
-
-		Stroke drawingStroke = new BasicStroke(8, BasicStroke.CAP_BUTT,
-				BasicStroke.JOIN_BEVEL, 0, new float[]{16}, 0);
-		g2.setStroke(drawingStroke);
-		g2.draw(line);
-
+		
+		g2.setPaint(paint);
+		
 		g2.fill(ball.ballImage);
-
+		
+		g2.fill(schlaeger1.paddleImage);
+		g2.fill(schlaeger2.paddleImage);
 
 		if (++count > echodichte) {
 			for (int i = echo.length - 1; i > 0; --i) {
@@ -151,9 +152,12 @@ public class Spielfeld extends JPanel implements Runnable {
 					echo[i].x += durchmesserabnahme / 2;
 				}
 			}
-			echo[0] = ball.ballImage;
+			if (ball.getGeschwindigkeit() != 0)
+				echo[0] = (Ellipse2D.Double) ball.ballImage.clone();
 			count = 0;
 		}
+		
+		
 
 	}
 
@@ -180,7 +184,7 @@ public class Spielfeld extends JPanel implements Runnable {
 			ball.setGeschwindigkeit(geschwindigkeit);
 		}
 	}
-
+	
 	@Override
 	public void run() {
 		while (true) {
